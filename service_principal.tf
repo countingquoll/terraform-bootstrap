@@ -17,11 +17,11 @@ resource "random_password" "terraform" {
   special = false
   upper   = true
   lower   = true
-  number  = true
+  numeric = true
 }
 
 resource "azuread_application" "terraform" {
-  name = local.service_principal_name
+  display_name = local.service_principal_name
 
   required_resource_access {
     resource_app_id = "00000002-0000-0000-c000-000000000000" // Azure Active Directory Graph
@@ -39,7 +39,8 @@ resource "azuread_application" "terraform" {
 }
 
 resource "azuread_service_principal" "terraform" {
-  application_id = azuread_application.terraform.application_id
+  client_id = azuread_application.terraform.client_id
+  owners    = [data.azuread_client_config.current.object_id]
 }
 
 resource "azuread_service_principal_password" "terraform" {

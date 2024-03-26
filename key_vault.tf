@@ -10,7 +10,6 @@ resource "azurerm_key_vault" "state" {
   enabled_for_disk_encryption     = false
   enabled_for_template_deployment = false
   purge_protection_enabled        = false
-  soft_delete_enabled             = true
   soft_delete_retention_days      = var.key_vault_soft_delete_retention
 
   network_acls {
