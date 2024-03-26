@@ -29,7 +29,7 @@ resource "azurerm_role_definition" "deployer" {
       "*/register/action"
     ]
     data_actions = [
-        "Microsoft.KeyVault/vaults/secrets/*"
+      "Microsoft.KeyVault/vaults/secrets/*"
     ]
   }
 }
