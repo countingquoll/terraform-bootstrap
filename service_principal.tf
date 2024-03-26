@@ -33,7 +33,7 @@ resource "azuread_application" "terraform" {
 
 resource "azuread_service_principal" "terraform" {
   client_id = azuread_application.terraform.client_id
-  owners    = [data.azuread_client_config.current.object_id]
+  owners    = [data.azurerm_client_config.current.object_id]
 }
 
 resource "azuread_service_principal_password" "terraform" {
