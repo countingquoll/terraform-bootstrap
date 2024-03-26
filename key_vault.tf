@@ -76,7 +76,7 @@ resource "azurerm_key_vault_secret" "client_id" {
   depends_on   = [azurerm_key_vault_access_policy.terraform_state_owner]
   name         = "client-id"
   key_vault_id = azurerm_key_vault.state.id
-  value        = azuread_service_principal.terraform.application_id
+  value        = azuread_service_principal.terraform.client_id
 }
 
 resource "azurerm_key_vault_secret" "client_secret" {

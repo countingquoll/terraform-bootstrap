@@ -12,16 +12,9 @@ locals {
   }
 }
 
-resource "random_password" "terraform" {
-  length  = 128
-  special = false
-  upper   = true
-  lower   = true
-  numeric = true
-}
-
 resource "azuread_application" "terraform" {
   display_name = local.service_principal_name
+  owners       = [data.azuread_client_config.current.object_id]
 
   required_resource_access {
     resource_app_id = "00000002-0000-0000-c000-000000000000" // Azure Active Directory Graph
@@ -45,7 +38,6 @@ resource "azuread_service_principal" "terraform" {
 
 resource "azuread_service_principal_password" "terraform" {
   service_principal_id = azuread_service_principal.terraform.id
-  value                = random_password.terraform.result
   end_date_relative    = "43200m"
 }
 
@@ -54,7 +46,6 @@ resource "azurerm_role_assignment" "storage_blob_contributor_service_principal" 
   role_definition_name = "Storage Blob Data Contributor"
   principal_id         = azuread_service_principal.terraform.object_id
 }
-
 
 resource "azurerm_role_assignment" "custom_rbac_assignments" {
   for_each = local.rbac_assignments

@@ -2,26 +2,34 @@ terraform {
   required_providers {
     azuread = {
       source  = "hashicorp/azuread"
-      version = "=2.47.0"
+      version = "~> 2.47.0"
     }
     azurerm = {
       source  = "hashicorp/azurerm"
-      version = "=3.86.0"
+      version = "~> 3.97.0"
+    }
+    local = {
+      version = "~> 2.5.1"
+    }
+    random = {
+      version = "~> 3.6.0"
     }
   }
 }
 
-provider "azuread" {
-}
+provider "azuread" {}
 
-provider "random" {
-}
+provider "random" {}
 
-provider "local" {
-}
+provider "local" {}
 
 provider "azurerm" {
-  features {}
+  features {
+    key_vault {
+      purge_soft_delete_on_destroy    = true
+      recover_soft_deleted_key_vaults = true
+    }
+  }
 }
 
 data "azurerm_client_config" "current" {}
