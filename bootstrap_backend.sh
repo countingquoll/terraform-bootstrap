@@ -1,8 +1,8 @@
 #!/bin/bash
 
-read -e -i westeurope -p "Azure region        : " location
-read -e -i terraform  -p "resource group name : " resource_group_name
-read -e -i tfstate    -p "container name      : " container_name
+read -e -i northeurope            -p "Azure region        : " location
+read -e -i rg-devsecops-terraform -p "resource group name : " resource_group_name
+read -e -i tfstate                -p "container name      : " container_name
 
 location=${location:-westeurope}
 resource_group_name=${resource_group_name:-terraform}
@@ -12,7 +12,10 @@ upn=$(az ad signed-in-user show --query userPrincipalName --output tsv)
 subscription_account_id=$(az account show -o tsv --query id)
 
 az group create --name $resource_group_name --location $location --output jsonc
-az role assignment create --assignee $upn --role Owner --scope /subscriptions/${subscription_account_id}/resourceGroups/${resource_group_name}
+
+# We have to prepend the following command with a bash workaround.
+# See https://stackoverflow.com/a/69453643/1384969
+MSYS_NO_PATHCONV=1 az role assignment create --assignee $upn --role Owner --scope /subscriptions/${subscription_account_id}/resourceGroups/${resource_group_name}
 
 # Check to see if existing storage account exists
 jmespath_query="[? tags.created_by == 'bootstrap_backend.sh']|[0].name"
