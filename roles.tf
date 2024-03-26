@@ -1,3 +1,5 @@
+data "azurerm_subscription" "primary" {}
+
 resource "azurerm_role_definition" "deployer" {
   name        = "Livingstone Deployment Agent"
   scope       = data.azurerm_subscription.primary.id
