@@ -24,12 +24,14 @@ then
 else
   random=$(openssl rand -base64 32 |md5sum |cut -c 1-8)
   storage_account_name=tfstate$random
-  az storage account create --name $storage_account_name --resource-group $resource_group_name --kind StorageV2 --sku Standard_RAGRS --tags created_by=bootstrap_backend.sh --allow-blob-public-access falsefi
+  az storage account create --name $storage_account_name --resource-group $resource_group_name --kind StorageV2 --sku Standard_RAGRS --tags created_by=bootstrap_backend.sh --allow-blob-public-access false
 fi
 
 storage_account_id=$(az storage account show --name $storage_account_name --resource-group $resource_group_name --query id --output tsv)
 
-az role assignment create --assignee $upn --scope $storage_account_id --role "Storage Blob Data Owner"
+# We have to prepend the following command with a bash workaround.
+# See https://stackoverflow.com/a/69453643/1384969
+MSYS_NO_PATHCONV=1 az role assignment create --assignee $upn --scope $storage_account_id --role "Storage Blob Data Owner"
 
 storage_account_key=$(az storage account keys list --resource-group $resource_group_name --account-name $storage_account_name --output tsv --query "[1].value")
 az storage container create --name $container_name --account-name $storage_account_name --account-key $storage_account_key
