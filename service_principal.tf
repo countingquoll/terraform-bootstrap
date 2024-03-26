@@ -14,7 +14,7 @@ locals {
 
 resource "azuread_application" "terraform" {
   display_name = local.service_principal_name
-  owners       = [data.azuread_client_config.current.object_id]
+  owners       = [data.azurerm_client_config.current.object_id]
 
   required_resource_access {
     resource_app_id = "00000002-0000-0000-c000-000000000000" // Azure Active Directory Graph
